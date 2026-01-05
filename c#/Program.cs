@@ -9,6 +9,7 @@ class Program
         
         Console.Write("gd");
         Console.Write("gdgd");
+        Console.Write("test");
         
     }
 }
