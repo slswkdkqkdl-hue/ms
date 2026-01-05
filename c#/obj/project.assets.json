@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\slswk\\OneDrive\\Desktop\\c#\\c#.csproj",
+      "projectUniqueName": "C:\\Users\\slswk\\Documents\\GitHub\\ms\\c#\\c#.csproj",
       "projectName": "c#",
-      "projectPath": "C:\\Users\\slswk\\OneDrive\\Desktop\\c#\\c#.csproj",
+      "projectPath": "C:\\Users\\slswk\\Documents\\GitHub\\ms\\c#\\c#.csproj",
       "packagesPath": "C:\\Users\\slswk\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\slswk\\OneDrive\\Desktop\\c#\\obj\\",
+      "outputPath": "C:\\Users\\slswk\\Documents\\GitHub\\ms\\c#\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\slswk\\AppData\\Roaming\\NuGet\\NuGet.Config"
