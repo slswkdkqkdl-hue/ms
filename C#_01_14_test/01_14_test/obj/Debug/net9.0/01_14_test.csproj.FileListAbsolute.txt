@@ -1,0 +1,15 @@
+c:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\bin\Debug\net9.0\01_14_test.exe
+C:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\bin\Debug\net9.0\01_14_test.deps.json
+C:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\bin\Debug\net9.0\01_14_test.runtimeconfig.json
+c:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\bin\Debug\net9.0\01_14_test.dll
+c:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\bin\Debug\net9.0\01_14_test.pdb
+c:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\obj\Debug\net9.0\01_14_test.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\obj\Debug\net9.0\01_14_test.AssemblyInfoInputs.cache
+c:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\obj\Debug\net9.0\01_14_test.AssemblyInfo.cs
+c:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\obj\Debug\net9.0\01_14_test.csproj.CoreCompileInputs.cache
+c:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\obj\Debug\net9.0\01_14_test.sourcelink.json
+c:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\obj\Debug\net9.0\01_14_test.dll
+c:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\obj\Debug\net9.0\refint\01_14_test.dll
+c:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\obj\Debug\net9.0\01_14_test.pdb
+C:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\obj\Debug\net9.0\01_14_test.genruntimeconfig.cache
+C:\Users\slswk\Documents\GitHub\ms\C#_01_14_test\01_14_test\obj\Debug\net9.0\ref\01_14_test.dll
