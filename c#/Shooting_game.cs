@@ -76,6 +76,7 @@ namespace 슈팅게임만들기
             if(item.ItemLife)
             {
                // item.ItemMove();
+                item.ItemMove();
                 item.ItemDraw();
                 //아이템 충돌
                 CrashItem();
@@ -355,6 +356,58 @@ namespace 슈팅게임만들기
                         }
                     }
                 }
+                 if (playerBullet2[i].fire == true)
+                {
+                    //미사일과 적의 y값이 같을때
+                    if (playerBullet2[i].y == enemy.enemyY)
+                    {
+                        if (playerBullet2[i].x >= (enemy.enemyX -1)
+                            && playerBullet2[i].x <= (enemy.enemyX+1)) //충돌
+                        {
+                            //아이템
+                            item.ItemLife = true;
+                            item.itemX = enemy.enemyX;
+                            item.itemY = enemy.enemyY;
+
+
+                            //충돌
+                            Random rand = new Random();
+                            enemy.enemyX = 75;
+                            enemy.enemyY = rand.Next(2, 22);
+
+                            playerBullet2[i].fire = false; //미사일 준비상태로 만들어주기
+
+                            //스코어
+                            Score += 100;
+                        }
+                    }
+                }
+                 if (playerBullet3[i].fire == true)
+                {
+                    //미사일과 적의 y값이 같을때
+                    if (playerBullet3[i].y == enemy.enemyY)
+                    {
+                        if (playerBullet3[i].x >= (enemy.enemyX -1)
+                            && playerBullet3[i].x <= (enemy.enemyX+1)) //충돌
+                        {
+                            //아이템
+                            item.ItemLife = true;
+                            item.itemX = enemy.enemyX;
+                            item.itemY = enemy.enemyY;
+
+
+                            //충돌
+                            Random rand = new Random();
+                            enemy.enemyX = 75;
+                            enemy.enemyY = rand.Next(2, 22);
+
+                            playerBullet3[i].fire = false; //미사일 준비상태로 만들어주기
+
+                            //스코어
+                            Score += 100;
+                        }
+                    }
+                }
             }
         }
     }
@@ -406,8 +459,16 @@ namespace 슈팅게임만들기
         public void ItemDraw()
         {
             Console.SetCursorPosition(itemX, itemY);
-            ItemSprite = "Item★";
-            Console.Write(ItemSprite);
+            Console.Write("Item★");
+        }
+        public void ItemMove()
+        {
+            itemX--;
+            if (itemX < 0)
+            {
+                ItemLife = false;
+                itemX = 0; 
+            }
         }
 
     }
@@ -449,10 +510,6 @@ namespace 슈팅게임만들기
 
                     //플레이어
                     player.GameMain();
-
-
-
-
 
                     //총알
                     if (player.itemCount == 0)
