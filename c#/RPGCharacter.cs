@@ -12,34 +12,16 @@ namespace ConsoleApp41
 
 
     class Program
-    {   
-       
-        static void Main(string[] args)
+    {
+        class Player
         {
-             Console.Clear();
-            string input ;
-
-            while (true)
-            {
-                Console.WriteLine("==============");
-                input = Console.ReadLine();
-
-                switch (input)
-                {
-                    case"1":
-                        Console.WriteLine("눌림=================");
-                        break;
-                    case "2":
-                        Console.WriteLine("으아아아아앙아아아아아아");
-                        break;
-                    case "3":
-                        Console.Clear();
-                        break;
-                }
-                if(input == "4") break;
-            }
             
+            private int hp;
+            private int a1;
 
+          
         }
+       
+ 
     }
 }
