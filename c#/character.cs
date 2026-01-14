@@ -14,6 +14,7 @@ class character
         public int mp;
         public int maxMP;
         
+
         Random rand = new Random();
 
         public character(string name , int level )
