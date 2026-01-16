@@ -1,0 +1,15 @@
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\bin\Debug\net9.0\Console_project.exe
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\bin\Debug\net9.0\Console_project.deps.json
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\bin\Debug\net9.0\Console_project.runtimeconfig.json
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\bin\Debug\net9.0\Console_project.dll
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\bin\Debug\net9.0\Console_project.pdb
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\obj\Debug\net9.0\Console_project.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\obj\Debug\net9.0\Console_project.AssemblyInfoInputs.cache
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\obj\Debug\net9.0\Console_project.AssemblyInfo.cs
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\obj\Debug\net9.0\Console_project.csproj.CoreCompileInputs.cache
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\obj\Debug\net9.0\Console_project.sourcelink.json
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\obj\Debug\net9.0\Console_project.dll
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\obj\Debug\net9.0\refint\Console_project.dll
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\obj\Debug\net9.0\Console_project.pdb
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\obj\Debug\net9.0\Console_project.genruntimeconfig.cache
+C:\Users\slswk\Documents\GitHub\ms\Console_project\Console_project\obj\Debug\net9.0\ref\Console_project.dll

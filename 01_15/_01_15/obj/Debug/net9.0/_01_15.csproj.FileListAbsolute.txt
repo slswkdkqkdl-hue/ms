@@ -1,0 +1,15 @@
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\bin\Debug\net9.0\_01_15.exe
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\bin\Debug\net9.0\_01_15.deps.json
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\bin\Debug\net9.0\_01_15.runtimeconfig.json
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\bin\Debug\net9.0\_01_15.dll
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\bin\Debug\net9.0\_01_15.pdb
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\obj\Debug\net9.0\_01_15.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\obj\Debug\net9.0\_01_15.AssemblyInfoInputs.cache
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\obj\Debug\net9.0\_01_15.AssemblyInfo.cs
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\obj\Debug\net9.0\_01_15.csproj.CoreCompileInputs.cache
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\obj\Debug\net9.0\_01_15.sourcelink.json
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\obj\Debug\net9.0\_01_15.dll
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\obj\Debug\net9.0\refint\_01_15.dll
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\obj\Debug\net9.0\_01_15.pdb
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\obj\Debug\net9.0\_01_15.genruntimeconfig.cache
+C:\Users\slswk\Documents\GitHub\ms\01_15\_01_15\obj\Debug\net9.0\ref\_01_15.dll
