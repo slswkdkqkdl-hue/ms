@@ -896,17 +896,21 @@ class Program
         DrawBorder();
         Console.SetCursorPosition(width/2,height/2);
         Console.WriteLine($"여기는 전투 씬");
-        // Console.WriteLine($"클리어 유무 무조건대야함 {currentRoom.IsCleared}");
         mp_save = SelectedCharacter.mp; // mp저장 끝나고 채울려고
 
 
         //여기서부터 배틀 로직작성
         Thread.Sleep(1500);
+
+
         //플레이어가 승리했을시 
         // Win_Sceen();
         //플레이어가 패배했을시
-        Win_Sceen();
+        //Lose_Sceen();
     }
+
+
+
     static void ApplyRandomStatReward()
     {
         Random rand = new Random();
