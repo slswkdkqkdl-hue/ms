@@ -15,6 +15,9 @@ class Program
 
     public static List<Health_Potion> hp_Potion;   
     public static List<Mana_Potion> mp_Potion;   
+
+    static Room currentRoom; // 현재 방
+    static Room startRoom; // 시작 방
     static void Main()
     {
         Console.OutputEncoding = Encoding.UTF8;
@@ -27,7 +30,7 @@ class Program
         hp_Potion = new List<Health_Potion>();
         mp_Potion = new List<Mana_Potion>();
        
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 2; i++)
         {
             hp_Potion.Add(new Health_Potion());   
             mp_Potion.Add(new Mana_Potion());
@@ -245,7 +248,7 @@ class Program
 
                 case "2":
                     Console.SetCursorPosition(5, y - 2);
-                    Console.Write("미구현 입니다 ㅎㅎ...");
+                    Console.Write(".......");
                     Thread.Sleep(800);
                     break; // 다시 입력 받으러 while 처음으로
 
@@ -540,7 +543,10 @@ class Program
         DrawCharacter(Archer_border,  centerX + 17, boxY); 
     }
     public static void Map_Sceen()
-    {
+    {   
+
+        
+
         Console.CursorVisible = false;
         Console.Clear();
         DrawBorder();
@@ -588,15 +594,20 @@ class Program
         Console.Write("아이템 보유 수량");
 
         Console.SetCursorPosition(74,23);
-        Console.Write($" 체력 포션 :   {hp_Potion.Count}개");
+        Console.Write($" 체력 포션 :  {hp_Potion.Count}개");
 
         Console.SetCursorPosition(74,24);
-        Console.Write($" 마나 포션 :   {mp_Potion.Count}개");
+        Console.Write($" 마나 포션 :  {mp_Potion.Count}개");
 
         // 벽 세우기 (오른쪽 능력치)
         for (int i = 0; i < 18; i++)
         {
             Console.SetCursorPosition(72,2+i);
+            Console.Write("■");
+        }
+        for (int i = 0; i < 18; i++)
+        {
+            Console.SetCursorPosition(71,2+i);
             Console.Write("■");
         }
         Console.SetCursorPosition(78,4);
@@ -613,6 +624,13 @@ class Program
         Console.Write($" Def : {SelectedCharacter.def}");
         Console.SetCursorPosition(78,17);
         Console.Write($" Speed : {SelectedCharacter.speed}");
+        
+        room_UI();
+
+        Console.SetCursorPosition(10,14);
+        Console.Write("P"); // 시작 플레이 위치 표시
+
+        Room next = null;
 
         while (true)
         {   
@@ -644,8 +662,149 @@ class Program
             }
         }
 
-      
-        
-    }
+        static void room_UI()
+        {
+            string[] normal =
+            {
+                "■■■■■■■■■",
+                "■┌     ┐■",
+                "■       ■",
+                "■└     ┘■",
+                "■■■■■■■■■"
+            };
+            string[] Boss =
+            {
+                "■■■■■■■■■■",
+                "■┌      ┐■",
+                "■        ■",
+                "■└      ┘■",
+                "■■■■■■■■■■"
+            };
 
+        
+            DrawCharacter(normal,6,12); // 1번방 
+            Line_1();
+            DrawCharacter(normal,14,4); // 2번방
+            Line_2();
+            DrawCharacter(normal,23,13); // 3번방 
+            Line_3();
+            Line_5();
+            DrawCharacter(normal,32,5); // 4번방  
+            Line_4();
+            DrawCharacter(normal,41,12); // 5번방 
+            Line_6();
+            DrawCharacter(Boss,54,5); // 보스방 6번방
+
+
+        }
+    }
+    static void Line_1()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            Console.SetCursorPosition(10,11-i);
+            Console.Write("■");
+        }
+        Console.SetCursorPosition(11,6);
+        Console.Write("■");
+        Console.SetCursorPosition(12,6);
+        Console.Write("■");
+        Console.SetCursorPosition(13,6);
+        Console.Write("■");
+    }
+    static void Line_2()
+    {
+        Console.SetCursorPosition(18,9);
+        Console.Write("■");
+        int l = 0;
+        while (l != 7)
+        {
+            Console.SetCursorPosition(18,9+l);
+            Console.Write("■");
+            l++;
+        }
+        Console.SetCursorPosition(19,15);
+        Console.Write("■");
+        Console.SetCursorPosition(20,15);
+        Console.Write("■");
+        Console.SetCursorPosition(21,15);
+        Console.Write("■");
+        Console.SetCursorPosition(22,15);
+        Console.Write("■");
+    }
+    static void Line_3()
+    {
+        Console.SetCursorPosition(23,6);
+        Console.Write("■");
+        Console.SetCursorPosition(24,6);
+        Console.Write("■");
+        Console.SetCursorPosition(25,6);
+        Console.Write("■");
+        Console.SetCursorPosition(26,6);
+        Console.Write("■");
+        Console.SetCursorPosition(26,7);
+        Console.Write("■");
+        Console.SetCursorPosition(27,7);
+        Console.Write("■");
+        Console.SetCursorPosition(28,7);
+        Console.Write("■");
+        Console.SetCursorPosition(29,7);
+        Console.Write("■");
+        Console.SetCursorPosition(30,7);
+        Console.Write("■");
+        Console.SetCursorPosition(31,7);
+        Console.Write("■");
+    }
+    static void Line_4()
+    {
+        Console.SetCursorPosition(42,7); //55
+        Console.Write("■");
+        for(int i = 0; i < 13; i++)
+        {
+            Console.SetCursorPosition(42+i,7); 
+            Console.Write("■");
+        }
+    }
+    static void Line_5()
+    {
+       
+        for (int i = 0; i < 4; i++)
+        {
+            Console.SetCursorPosition(32+i,15); //x 36  //42
+            Console.Write("■");
+        }
+        Console.SetCursorPosition(36,15);
+        Console.Write("■");
+        Console.SetCursorPosition(36,14);
+        Console.Write("■");
+        Console.SetCursorPosition(37,14);
+        Console.Write("■");
+        Console.SetCursorPosition(38,14);
+        Console.Write("■");
+        Console.SetCursorPosition(39,14);
+        Console.Write("■");
+        Console.SetCursorPosition(40,14);
+        Console.Write("■");
+        Console.SetCursorPosition(41,14);
+        Console.Write("■");
+    }
+    static void Line_6()
+    {
+            //(50,14,)
+        for (int i =0 ;i <11; i++)
+        {   
+            Console.SetCursorPosition(49+i,14); //65
+            Console.Write("■");
+        }
+        for (int i = 0; i <8; i++)
+        {
+            Console.SetCursorPosition(59,14-i);
+            Console.Write("■");
+        }
+    }
 }
+
+//////////// ⚔ ☠ ⚠
+/// ///////// P : 플레이어 위치 & 플레이어가 지나간곳
+/// ///////// E : 몬스터 방
+/// ///////// B : 보스 방
