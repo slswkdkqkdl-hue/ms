@@ -1,8 +1,17 @@
 ﻿using System;
+using System.Data;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+public enum StatType
+{
 
+    MP,
+    ATK,
+    DEF,
+
+    SPEED,
+}
 class Program
 {
     const int width = 100;
@@ -16,8 +25,11 @@ class Program
     public static List<Health_Potion> hp_Potion;   
     public static List<Mana_Potion> mp_Potion;   
 
-    static Room currentRoom; // 현재 방
-    static Room startRoom; // 시작 방
+    public static Room currentRoom; // 현재 방
+    public static Room startRoom; // 시작 방
+    public static Room next = null; // 처음 방초기화
+    
+    public static int mp_save; // mp 만저장 왜? 왜난 쌈끝날때마다 계속다시채워줄거임
     static void Main()
     {
         Console.OutputEncoding = Encoding.UTF8;
@@ -37,7 +49,7 @@ class Program
         }
         
  
-
+        mp_save = 0;
         DrawBorder();
         DrawTitle();
         DrawMenu();
@@ -46,6 +58,7 @@ class Program
         Difficulty_Selection_Scene(); // 난이도 선택씬
         character_selection_Scene(); // 캐릭터 선택씬 
           // 여기까지오면 Game_Level 얘량  SelectedCharacter 얘는 초기화되어있음
+        CreateMap(); // 맵 생성
         Map_Sceen(); // 맵씬 이동
       
     
@@ -279,8 +292,8 @@ class Program
         int centerX = (width / 2) - 8;
         int centerY = height / 2;
 
-        int duration = 3500; // 3초 동안 실행
-        int interval = 500;  // 0.5초마다 모양 변경
+        int duration = 3000; // 3초 동안 실행
+        int interval = 400;  // 0.5초마다 모양 변경
         int elapsed = 0;
         bool toggle = true;
 
@@ -541,11 +554,63 @@ class Program
         DrawCharacter(Wizard_border,  centerX - 8,  boxY); 
         // 궁수 위치(centerX + 20) 기준 박스 좌표
         DrawCharacter(Archer_border,  centerX + 17, boxY); 
+    } 
+    static void CreateMap()
+    {
+        Room r1 = new Room { Id = 1, Type = RoomType.Start }; // R1
+        Room r2 = new Room { Id = 2, Type = RoomType.Monster }; // R2
+        Room r3 = new Room { Id = 3, Type = RoomType.Normal }; // R3
+        Room r4 = new Room { Id = 4, Type = RoomType.Monster };// R4
+        Room r5 = new Room { Id = 5, Type = RoomType.Normal };//R5
+        Room r6 = new Room { Id = 6, Type = RoomType.Boss };//R6
+        r1.IsCleared = true;
+        // 연결
+        r1.Up = r2;
+
+        r2.Down = r4;
+        r2.Right = r3;
+
+        r3.Right = r6;
+        r4.Right = r5;
+        r5.Right = r6;
+
+
+        // 시작 위치
+        startRoom = r1;
+        currentRoom = r1;
     }
-    public static void Map_Sceen()
-    {   
+    public static void Room_chek()
+    {
+        int i = currentRoom.Id;
+        if(i == 1 && currentRoom.IsCleared) //R1
+        {
+            Console.SetCursorPosition(10,14); ///18,22
+            Console.Write("P"); 
+        }else if (i == 2 && currentRoom.IsCleared) // R2
+        {
+            Console.SetCursorPosition(18,6);
+            Console.Write("P");
+        }else if (i == 3&&currentRoom.IsCleared)  //R3 // 36,8
+        {
+            Console.SetCursorPosition(36,7);
+            Console.Write("P");
+        }
+        else if (i == 4&&currentRoom.IsCleared) //R4
+        {
+            Console.SetCursorPosition(27,15);
+            Console.Write("P");
+        }
+        else if (i == 5&&currentRoom.IsCleared) //R5
+        {
+            Console.SetCursorPosition(45,14);
+            Console.Write("P");
+        }
 
         
+    }
+
+    public static void Map_Sceen()
+    {   
 
         Console.CursorVisible = false;
         Console.Clear();
@@ -583,7 +648,7 @@ class Program
 
 
         // 맵 가운데 UI
-        Console.SetCursorPosition(46,21); //16
+        Console.SetCursorPosition(46,21); // 
         Console.Write("입력창");
         Console.SetCursorPosition(37,23);
         Console.CursorVisible = true;
@@ -626,11 +691,11 @@ class Program
         Console.Write($" Speed : {SelectedCharacter.speed}");
         
         room_UI();
+        Room_chek();
 
-        Console.SetCursorPosition(10,14);
-        Console.Write("P"); // 시작 플레이 위치 표시
 
-        Room next = null;
+      
+        
 
         while (true)
         {   
@@ -644,22 +709,45 @@ class Program
             Console.SetCursorPosition(46, 23);
             Console.Write(new string(' ', str_m.Length + 5)); 
 
-            if(str_m == "1")
+            switch (str_m)
             {
-                break;
+                case "1": // 위
+                    next = currentRoom.Up;
+                    break;
+                case "2": // 아래
+                    next = currentRoom.Down;
+                    break;
+                case "3": // 오른쪽
+                    next = currentRoom.Right;
+                    break;
+                default:
+                    break;
             }
-            if(str_m == "2")
-            {
-                break;
-            }
-            if(str_m == "3")
-            {
-                break;
+            if (next != null)
+            {   
+               Console.CursorVisible = false;
+               Console.SetCursorPosition(36,22); 
+               Console.Write("                          ");
+               Console.SetCursorPosition(36,22); 
+               Console.Write("⚔ 방으로 이동합니다.⚔");
+               Thread.Sleep(2000); // 2초후에 이동
+               currentRoom.IsCleared = true; // 방들어가기전에 그냥 그방은 클리어로해버림
+               currentRoom = next;
+               next.IsCleared = true;
+              
+               loading_screen();
+               Battle_Sceen();
+               break;
+               
+               // 전투씬 이동 함수
             }
             else
             {
-                
+               Console.SetCursorPosition(36,22); 
+               Console.Write("그곳으로는 갈수 없습니다..");   
             }
+            
+           
         }
 
         static void room_UI()
@@ -676,7 +764,7 @@ class Program
             {
                 "■■■■■■■■■■",
                 "■┌      ┐■",
-                "■        ■",
+                "■  Boss  ■",
                 "■└      ┘■",
                 "■■■■■■■■■■"
             };
@@ -801,6 +889,180 @@ class Program
             Console.SetCursorPosition(59,14-i);
             Console.Write("■");
         }
+    }
+    public static void Battle_Sceen() // 아직 미구현 
+    {
+        Console.Clear();
+        DrawBorder();
+        Console.SetCursorPosition(width/2,height/2);
+        Console.WriteLine($"여기는 전투 씬");
+        // Console.WriteLine($"클리어 유무 무조건대야함 {currentRoom.IsCleared}");
+        mp_save = SelectedCharacter.mp; // mp저장 끝나고 채울려고
+
+
+        //여기서부터 배틀 로직작성
+        Thread.Sleep(1500);
+        //플레이어가 승리했을시 
+        // Win_Sceen();
+        //플레이어가 패배했을시
+        Win_Sceen();
+    }
+    static void ApplyRandomStatReward()
+    {
+        Random rand = new Random();
+
+        // 강화할 스탯 개수 (1~3)
+        int statCount = rand.Next(1, 4);
+
+        //스탯 목록 생성
+        List<StatType> stats = new List<StatType>
+        {
+            StatType.MP,
+            StatType.ATK,
+            StatType.DEF,
+            StatType.SPEED
+        };
+
+        // 스탯 섞기 (Shuffle)
+        for (int i = 0; i < stats.Count; i++)
+        {
+            int j = rand.Next(i, stats.Count);
+            (stats[i], stats[j]) = (stats[j], stats[i]);
+        }
+
+        // 앞에서 statCount 개 선택
+        for (int i = 0; i < statCount; i++)
+        {
+            int value = rand.Next(1, 3); // 증가 수치 1~3
+
+            switch (stats[i])
+            {
+               
+                case StatType.MP:
+                    SelectedCharacter.mp += value;
+                    break;
+
+                case StatType.ATK:
+                    SelectedCharacter.atk += value;
+                    break;
+
+                case StatType.DEF:
+                    SelectedCharacter.def += value;
+                    break;
+                case StatType.SPEED:
+                    SelectedCharacter.speed += value;
+                    break;
+            }
+        }
+    }
+
+    public static void Win_Sceen()
+    {
+        Console.Clear();
+        DrawBorder();
+        SelectedCharacter.mp = mp_save; //싸움끝나고 돌아왔을때 마나 다시충전
+        string[] ability =
+        {
+            "■■■■■■■■■■■■■■■■■■",
+            "■                ■",
+            "■  HP :          ■",
+            "■  MP :          ■",
+            "■  Atk :         ■",
+            "■  Def :         ■",
+            "■  Speed :       ■",
+            "■                ■",
+            "■■■■■■■■■■■■■■■■■■"    
+        }; 
+       
+       if(currentRoom.Id != 6)
+        {
+            Console.SetCursorPosition(width/2-10,3);
+            Console.Write("★  승리를 축하 합니다 ★");
+
+            Console.SetCursorPosition(23,6);
+            Console.Write("변경 전");
+
+            Console.SetCursorPosition(62,6);
+            Console.Write("변경 후");
+            
+            Console.SetCursorPosition(width/2+3,height/2-2); // 50 //15
+            Console.Write("▶"); 
+            Console.SetCursorPosition(width/2+2,height/2-2); // 50 //15
+            Console.Write("▶"); 
+            Console.SetCursorPosition(width/2+1,height/2-2); // 50 //15
+            Console.Write("▶");
+            Console.SetCursorPosition(width/2,height/2-2); // 50 //15
+            Console.Write("▶");
+            Console.SetCursorPosition(width/2-1,height/2-2); // 50 //15
+            Console.Write("▶");
+            Console.SetCursorPosition(width/2-2,height/2-2); // 50 //15
+            Console.Write("▶");
+
+            DrawCharacter(ability,23,7); 
+            DrawCharacter(ability,62,7);
+
+            //변경전 능력치
+            Console.SetCursorPosition(31,9);
+            Console.Write($"{SelectedCharacter.hp}/{SelectedCharacter.max_hp}"); // 
+            Console.SetCursorPosition(32,10);
+            Console.Write($"{SelectedCharacter.mp}"); // 
+            Console.SetCursorPosition(33,11);
+            Console.Write($"{SelectedCharacter.atk}");
+            Console.SetCursorPosition(33,12);
+            Console.Write($"{SelectedCharacter.def}");
+            Console.SetCursorPosition(34,13);
+            Console.Write($"{SelectedCharacter.speed}");
+
+
+            ApplyRandomStatReward();
+            Console.SetCursorPosition(70,9);
+            Console.Write($"{SelectedCharacter.hp}/{SelectedCharacter.max_hp}"); // 
+            Console.SetCursorPosition(71,10);
+            Console.Write($"{SelectedCharacter.mp}"); // 
+            Console.SetCursorPosition(72,11);
+            Console.Write($"{SelectedCharacter.atk}");
+            Console.SetCursorPosition(72,12);
+            Console.Write($"{SelectedCharacter.def}");
+            Console.SetCursorPosition(73,13);
+            Console.Write($"{SelectedCharacter.speed}");
+        
+            Console.SetCursorPosition(3,21);
+            Console.Write("0 입력시 맵으로 돌아가기");
+            
+            Console.SetCursorPosition(3,23);
+            while (true)
+            {   
+                Console.CursorVisible = true;    
+                Console.Write("입력 창 : ");
+                string str_w = Console.ReadLine();
+                
+                if(str_w == "0") 
+                {   
+                    Map_Sceen();
+                    break;
+                }
+                else
+                {   
+                    Console.CursorVisible = false;
+                    Console.SetCursorPosition(3,23);
+                    Console.Write(new string(' ', 50)); // 지우기
+                    Console.SetCursorPosition(3,23);
+                }
+
+            }
+         
+        }
+        else if(currentRoom.Id == 6)
+        {
+            // 게임엔딩 
+        }
+    }
+    public static void Lose_Sceen()
+    {
+        Console.Clear();
+        DrawBorder();
+        Console.SetCursorPosition(width/2,height/2);
+        Console.Write("여기는 패배씬");
     }
 }
 
