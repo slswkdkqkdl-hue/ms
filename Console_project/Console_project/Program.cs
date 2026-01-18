@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
@@ -9,7 +10,7 @@ public enum StatType
     MP,
     ATK,
     DEF,
-
+    HP,
     SPEED,
 }
 class Program
@@ -21,6 +22,7 @@ class Program
 
     public static character SelectedCharacter; // 선택 캐릭터 담기
     public static Enemy[] enemy; // 난이도 선택대면 그만큼 몬스터담기
+    public static Enemy Choice_enemy; // 선택된 몬스터
 
     public static List<Health_Potion> hp_Potion;   
     public static List<Mana_Potion> mp_Potion;   
@@ -28,7 +30,8 @@ class Program
     public static Room currentRoom; // 현재 방
     public static Room startRoom; // 시작 방
     public static Room next = null; // 처음 방초기화
-    
+    public static int atk_w; // 전사용
+    public static int count= 1; //턴 수 잴거임이건
     public static int mp_save; // mp 만저장 왜? 왜난 쌈끝날때마다 계속다시채워줄거임
     static void Main()
     {
@@ -147,12 +150,12 @@ class Program
         }
     }
     // 몬스터 UI
-    static string[] monster(int i )
+    static string[] monster(Enemy enemy)
     {
 
-        switch (i)
+        switch (enemy.name)
         {
-            case 1:
+            case "슬라임":
                 string[] slime =
                 {
                     "   ★   ",
@@ -161,7 +164,7 @@ class Program
                 };
                 return slime;
                 break;
-            case 2:
+            case "엔더맨":
                 string[] Enderman =
                 {   "   ▪︎  ",
                     "  ███ ",
@@ -171,7 +174,7 @@ class Program
                 return Enderman;
                 break;
 
-            case 3:
+            case "고양이":
                 string[] cat =
                 {
                     " /\\    /",
@@ -323,8 +326,8 @@ class Program
     // 로딩 애니메이션 (3초 동안 깜빡임)
     public static void LoadingAnimation(int x, int y)
     {
-        int duration = 3000; // 3초 (3000ms)
-        int interval = 500;  // 0.5초마다 모양 변경
+        int duration = 2400; // 3초 (3000ms)
+        int interval = 400;  // 0.5초마다 모양 변경
         int elapsed = 0;
 
         bool toggle = true;
@@ -590,7 +593,7 @@ class Program
         {
             Console.SetCursorPosition(18,6);
             Console.Write("P");
-        }else if (i == 3&&currentRoom.IsCleared)  //R3 // 36,8
+        }else if (i == 3&&currentRoom.IsCleared)  //R3 
         {
             Console.SetCursorPosition(36,7);
             Console.Write("P");
@@ -738,8 +741,6 @@ class Program
                loading_screen();
                Battle_Sceen();
                break;
-               
-               // 전투씬 이동 함수
             }
             else
             {
@@ -890,26 +891,429 @@ class Program
             Console.Write("■");
         }
     }
-    public static void Battle_Sceen() // 아직 미구현 
+    public static void Battle_Sceen() 
     {
         Console.Clear();
         DrawBorder();
-        Console.SetCursorPosition(width/2,height/2);
-        Console.WriteLine($"여기는 전투 씬");
         mp_save = SelectedCharacter.mp; // mp저장 끝나고 채울려고
-
-
+        atk_w = SelectedCharacter.atk;
+        count = 1; // 전투 시작 시 1턴으로 초기화
+        Battle_Sceen_UI();
         //여기서부터 배틀 로직작성
-        Thread.Sleep(1500);
 
+        // 각방에 나올 몬스터 설정
+        if(currentRoom.Id == 2) Choice_enemy =enemy[0];
+        if(currentRoom.Id == 3) Choice_enemy =enemy[1];
+        if(currentRoom.Id == 4) Choice_enemy =enemy[1];
+        if(currentRoom.Id == 5) Choice_enemy =enemy[0];
+        if(currentRoom.Id == 6) Choice_enemy =enemy[2];
+
+
+        Renewal(); // 모든 UI 갱신
+        Tun_set(); // "1" 출력
+
+
+        DrawCharacter(Character_Draw(),17,9); // 캐릭터그리기 이건고정
+        DrawCharacter(monster(Choice_enemy),50,8); // 몬스터 그리기 1 이슬라임
+        Renewal();
+        
+        Tun_set();
+        Console.SetCursorPosition(39, 23);
+        Console.Write("입력 :           ");
+
+        // if(SelectedCharacter.speed < Choice_enemy.speed)
+        // {
+        //     Enemy_Tun();
+        // }
+
+        // 입력 처리
+        while (true)
+        {   
+
+ 
+
+            Console.SetCursorPosition(39, 23);
+            Console.Write("입력 :           "); 
+            Console.SetCursorPosition(46, 23); 
+
+            string str_m = Console.ReadLine();
+
+    
+            Console.SetCursorPosition(46, 23);
+            Console.Write(new string(' ', str_m.Length + 5)); 
+            
+            switch (str_m)
+            {
+                case "1":
+                    SelectedCharacter.Attack(Choice_enemy);
+                    Renewal();
+                    Console.ReadKey();
+                    Clear_Output();
+                    if(Choice_enemy.hp <= 0)
+                    {
+                        Win_Sceen();
+                        break;
+                    }
+                    Enemy_Tun();
+                    break;
+                case "2":
+
+                    if (hp_Potion.Count <= 0)
+                    {
+                        break;
+                    }
+
+                    if (SelectedCharacter.hp >= SelectedCharacter.max_hp)
+                    {
+                        break;
+                    }
+
+                    Health_Potion potion = hp_Potion[0];
+                    SelectedCharacter.hp += potion.hp_heel;
+
+                    if (SelectedCharacter.hp > SelectedCharacter.max_hp)
+                        SelectedCharacter.hp = SelectedCharacter.max_hp;
+
+                    hp_Potion.RemoveAt(0);
+
+                    Renewal();
+                    Console.SetCursorPosition(5,24);
+                    Console.Write("체력 포션 사용");
+                    Console.ReadKey();
+                    Clear_Output();
+                    Enemy_Tun();
+                    break;
+
+                case "3": 
+                    if (mp_Potion.Count <= 0)
+                    {
+                        break;
+                    }
+                    Mana_Potion potion_m = mp_Potion[0];
+                    SelectedCharacter.mp += potion_m.mp_heel;
+                    mp_Potion.RemoveAt(0); 
+                    Renewal();
+                    Console.SetCursorPosition(5,24);
+                    Console.Write("마나 회복 포션 사용");
+                    Console.ReadKey();
+                    Clear_Output();
+                    Enemy_Tun();
+                    break;
+                case "a":
+                    if (SelectedCharacter.mp < SelectedCharacter.Skills[0].MpCost)
+                    {
+                        break; 
+                    }
+                    UseSkill(0);
+                    Renewal();
+                    Console.ReadKey();
+                    Clear_Output();
+                    if(Choice_enemy.hp <= 0)
+                    {
+                        Win_Sceen();
+                        break;
+                    }
+                    Enemy_Tun();
+                    break;
+                case "b":
+                    if (SelectedCharacter.mp < SelectedCharacter.Skills[1].MpCost)
+                    {
+                        // Console.SetCursorPosition(36, 22);
+                        break; // ← 중요
+                    }
+                    UseSkill(1);
+                    Renewal();
+                    Console.ReadKey();
+                    Clear_Output();
+                    if(Choice_enemy.hp <= 0)
+                    {
+                        Win_Sceen();
+                        break;
+                    };
+                    Enemy_Tun();
+                    break;
+            
+                default:
+                    Console.CursorVisible = false;
+                    Console.SetCursorPosition(38,23); 
+                    Console.Write("                          ");
+                    break;
+            }
+            
+            Tun_set();
+            
+        }
 
         //플레이어가 승리했을시 
         // Win_Sceen();
         //플레이어가 패배했을시
-        //Lose_Sceen();
+        // Lose_Sceen();
+    }
+    public static void Tun_set()
+    {
+        Console.SetCursorPosition(36, 3);
+        // 뒤에 공백을 넣어 자릿수 변경 시 잔상 제거
+        Console.Write($"{count}   "); 
+    }
+    public static void Enemy_Tun()
+    {
+        // 1. 적 턴 시작 메시지
+        Console.SetCursorPosition(5, 24);
+        Console.Write("적의 턴입니다...");
+        Thread.Sleep(1000);
+        
+        // 2. 적 행동 수행
+        Choice_enemy.DoAction(SelectedCharacter);
+        Renewal(); // 행동 후 스탯 갱신 (내 HP가 깎인 것을 보여줌)
+
+        // 3. 플레이어 사망 체크
+        if (SelectedCharacter.hp <= 0)
+        {
+            Console.ReadKey();
+            Lose_Sceen();
+            return;
+        }
+
+        // 4. 한 라운드가 완전히 끝났으므로 턴 수 증가
+        count++; 
+        Tun_set(); // 증가된 턴 수 화면에 즉시 반영
+
+        Console.ReadKey();
+        Clear_Output();
+    }
+    public static void Renewal()
+    {
+        Enemy_hp_view(Choice_enemy); // 몬스터 체력 갱신
+        Enemy_status_View(Choice_enemy); // 몬스터 능력 갱신
+        Player_hp_View(); // 플레이어 체력 갱신
+        Player_status_View(); // 플레이어 스테이스 갱신
+        pot_set(); // 포션수 갱신
+    }
+    public static void pot_set()
+    {
+        Console.SetCursorPosition(74,23);
+        Console.Write($" 체력 포션 :  {hp_Potion.Count}개");
+
+        Console.SetCursorPosition(74,24);
+        Console.Write($" 마나 포션 :  {mp_Potion.Count}개");
+    }
+    public  static void Clear_Output()
+    {
+        Console.SetCursorPosition(5,21);
+        Console.Write("                     ");
+        Console.SetCursorPosition(5,22);
+        Console.Write("                     ");
+        Console.SetCursorPosition(5,23);
+        Console.Write("                     ");
+        Console.SetCursorPosition(5,24);
+        Console.Write("                     ");
+    }
+    static void Battle_Sceen_UI()
+    {
+            string[] Battle_bottom_border =
+        {
+            "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■", 
+            "■■■■                          ■■■■■■                             ■■■■■■■                       ■■■■■",
+            "■■■■                          ■■■■■■                             ■■■■■■■                       ■■■■■",
+            "■■■■                          ■■■■■■                             ■■■■■■■                       ■■■■■",
+            "■■■■                          ■■■■■■                             ■■■■■■■                       ■■■■■",
+            "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■"
+        };
+        DrawCharacter(Battle_bottom_border,0,20);
+        // 벽 세우기
+        for (int i = 0; i <= 18; i++)
+        {
+            Console.SetCursorPosition(72,1+i);
+            Console.Write("■");
+        } //71
+        int c =1;
+        while(c != 72)
+        {
+            Console.SetCursorPosition(c,18);   
+            Console.Write("■"); 
+            Console.SetCursorPosition(c,19);
+            Console.Write("■");
+            c++;
+        }
+        Console.SetCursorPosition(83,2);
+        Console.Write("<행동>");
+        
+        Console.SetCursorPosition(77,5);
+        Console.Write($"1.공격하기");
+        Console.SetCursorPosition(77,6);
+        Console.Write("2.체력 포션 사용");
+        Console.SetCursorPosition(77,7);
+        Console.Write("3.마나 포션 사용");
+
+        int t = 1;
+        while (t != 27)
+        {
+            Console.SetCursorPosition(72+t,11);
+            Console.Write("■");
+            t++;
+        }
+        // 여기서 스킬이름 넣어주면댐
+        Console.SetCursorPosition(78,14);
+        Console.Write($"a. {SelectedCharacter.Skills[0].Name} MP : {SelectedCharacter.Skills[0].MpCost}");
+        Console.SetCursorPosition(78,17);
+        Console.Write($"b. {SelectedCharacter.Skills[1].Name} MP : {SelectedCharacter.Skills[1].MpCost}");
+
+
+        // 아이템 칸 UI 
+        Console.SetCursorPosition(73,21);
+        Console.Write("아이템 보유 수량");
+
+        Console.SetCursorPosition(74,23);
+        Console.Write($" 체력 포션 :  {hp_Potion.Count}개");
+
+        Console.SetCursorPosition(74,24);
+        Console.Write($" 마나 포션 :  {mp_Potion.Count}개");
+
+        int s1=0;
+        while (s1 != 72)
+        {
+            Console.SetCursorPosition(1+s1,5);//72
+            Console.Write("■");
+            s1++;
+        }
+   
+        for(int i = 1; i <=5; i++)
+        {
+            Console.SetCursorPosition(30,i);
+            Console.Write("■");
+            Console.SetCursorPosition(42,i);
+            Console.Write("■");
+        }
+        Console.SetCursorPosition(33,1); // 36 중앙
+        Console.Write("턴  수");
+
+        Console.SetCursorPosition(36,10);
+        Console.Write("VS");        
+    }
+    static bool UseSkill(int index)
+    {
+        Skill skill = SelectedCharacter.Skills[index];
+
+        if (SelectedCharacter.mp < skill.MpCost)
+        {
+            return false; // 실패
+        } 
+
+        SelectedCharacter.mp -= skill.MpCost;
+        skill.Effect(SelectedCharacter, Choice_enemy);
+
+        return true; // 성공
     }
 
 
+    public static string[] Character_Draw()
+    {
+                // 전사
+        string[] warrior =
+        {
+            "  O  |",
+            " /|\\ ┼",
+            " / \\ "
+        };
+
+        // 마법사
+        string[] mage =
+        {
+        
+            "   O   ▲",
+            "  /|\\  ┬",
+            "  / \\  |"
+        };
+
+        // 궁수
+        string[] archer =
+        {
+            "   0  \\" ,
+            "  /|\\  }▶",
+            "  / \\ / "
+        };
+
+        switch (SelectedCharacter.Name)
+        {
+            case "전사":
+                return warrior;
+                break;
+            case "마법사":
+                return mage;
+                break;
+            case "궁수":
+                return archer;
+                break;
+        }
+        return null;
+    }
+    public static void Enemy_hp_view(Enemy enemy)
+    {
+        Console.SetCursorPosition(50,13); // 몬스터
+        int max = 0;
+        if(enemy.hp <= 0)
+        {
+           Console.Write($"HP : {max}/{enemy.max_hp} ");
+        }
+        else
+        {
+           Console.Write($"HP : {enemy.hp}/{enemy.max_hp} "); 
+        }
+        
+        
+    }   
+    // public static void Player_hp_View()
+    // {
+    //     Console.SetCursorPosition(14,13); // 플레이어
+    //     Console.Write($"HP : {SelectedCharacter.hp}/{SelectedCharacter.max_hp}");
+    //     Console.SetCursorPosition(14,14); // 플레이어
+    //     Console.Write($"MP : {SelectedCharacter.mp}");
+    // }
+    public static void Player_hp_View()
+    {
+        Console.SetCursorPosition(14, 13);
+        Console.Write($"HP : {SelectedCharacter.hp}/{SelectedCharacter.max_hp}   "); 
+        Console.SetCursorPosition(14, 14);
+        Console.Write($"MP : {SelectedCharacter.mp}   "); 
+    }
+    public static void Enemy_status_View(Enemy enemy)
+    {
+        Console.SetCursorPosition(63,1);
+        Console.Write($"{enemy.name}");
+
+        Console.SetCursorPosition(63,2);
+        Console.Write($"ATK : {enemy.atk}");
+
+        Console.SetCursorPosition(54,2);
+        Console.Write($"Def : {enemy.def}");
+
+        Console.SetCursorPosition(61,3);
+        Console.Write($"Speed : {enemy.speed}");
+    }
+    public static void Player_status_View()
+    {   
+        Console.SetCursorPosition(4,1);
+        Console.Write($"{SelectedCharacter.Name}");
+
+        Console.SetCursorPosition(4,2);
+        Console.Write($"Atk : {SelectedCharacter.atk}");
+
+        Console.SetCursorPosition(14,2);
+        Console.Write($"Def : {SelectedCharacter.def}");
+
+        Console.SetCursorPosition(4,3);
+        Console.Write($"Speed : {SelectedCharacter.speed}");   
+    }
+    public static void Tun_change_Enemy()
+    {
+        Console.SetCursorPosition(34,3);
+        Console.Write("Enemy");
+    }
+    public static void Tun_change_Player()
+    {
+        Console.SetCursorPosition(33,3);
+        Console.Write("Player");
+    }
 
     static void ApplyRandomStatReward()
     {
@@ -924,7 +1328,9 @@ class Program
             StatType.MP,
             StatType.ATK,
             StatType.DEF,
-            StatType.SPEED
+            StatType.SPEED,
+            StatType.HP
+            
         };
 
         // 스탯 섞기 (Shuffle)
@@ -937,23 +1343,39 @@ class Program
         // 앞에서 statCount 개 선택
         for (int i = 0; i < statCount; i++)
         {
-            int value = rand.Next(1, 3); // 증가 수치 1~3
+            int value = rand.Next(1, 2); // 증가 수치 1~2
 
             switch (stats[i])
             {
-               
+                
+                case StatType.HP:
+
+                    Console.SetCursorPosition(76,9);
+                    Console.Write($"+{value}");
+                    SelectedCharacter.hp += value;
+                    SelectedCharacter.max_hp +=value;
+                    break;
                 case StatType.MP:
+
+                    Console.SetCursorPosition(73,10);
+                    Console.Write($"+{value}");
                     SelectedCharacter.mp += value;
                     break;
 
                 case StatType.ATK:
+                    Console.SetCursorPosition(74,11);
+                    Console.Write($"+{value}");
                     SelectedCharacter.atk += value;
                     break;
 
                 case StatType.DEF:
+                     Console.SetCursorPosition(74,12);
+                     Console.Write($"+{value}");
                     SelectedCharacter.def += value;
                     break;
                 case StatType.SPEED:
+                    Console.SetCursorPosition(75,13);
+                    Console.Write($"+{value}");
                     SelectedCharacter.speed += value;
                     break;
             }
@@ -965,6 +1387,7 @@ class Program
         Console.Clear();
         DrawBorder();
         SelectedCharacter.mp = mp_save; //싸움끝나고 돌아왔을때 마나 다시충전
+        SelectedCharacter.atk = atk_w; // 싸움끝나고 다시 공격력 원상복귀
         string[] ability =
         {
             "■■■■■■■■■■■■■■■■■■",
@@ -1005,7 +1428,7 @@ class Program
             DrawCharacter(ability,23,7); 
             DrawCharacter(ability,62,7);
 
-            //변경전 능력치
+            //변경전 능력치 UI
             Console.SetCursorPosition(31,9);
             Console.Write($"{SelectedCharacter.hp}/{SelectedCharacter.max_hp}"); // 
             Console.SetCursorPosition(32,10);
@@ -1018,8 +1441,8 @@ class Program
             Console.Write($"{SelectedCharacter.speed}");
 
 
-            ApplyRandomStatReward();
-            Console.SetCursorPosition(70,9);
+            //변경 후 능력치 UI
+            Console.SetCursorPosition(70,9); // 77
             Console.Write($"{SelectedCharacter.hp}/{SelectedCharacter.max_hp}"); // 
             Console.SetCursorPosition(71,10);
             Console.Write($"{SelectedCharacter.mp}"); // 
@@ -1029,6 +1452,8 @@ class Program
             Console.Write($"{SelectedCharacter.def}");
             Console.SetCursorPosition(73,13);
             Console.Write($"{SelectedCharacter.speed}");
+
+            ApplyRandomStatReward();
         
             Console.SetCursorPosition(3,21);
             Console.Write("0 입력시 맵으로 돌아가기");
@@ -1057,16 +1482,65 @@ class Program
          
         }
         else if(currentRoom.Id == 6)
-        {
-            // 게임엔딩 
+        {   
+            Console.CursorVisible = false;
+            Console.Clear();
+            DrawBorder();
+            int i =1;
+            int r = 2;
+            while (i !=25)
+            {
+                Console.SetCursorPosition(1,i);
+                Console.Write("■");
+                Console.SetCursorPosition(98,i);
+                Console.Write("■");
+                i++;
+            
+            }
+            while(r != 98)
+            {
+                Console.SetCursorPosition(r,1);
+                Console.Write("■");
+                Console.SetCursorPosition(r,24);
+                Console.Write("■");
+                r++;
+            }
+            Console.SetCursorPosition(width/2-12,(height/2)-2);
+            Console.Write("게임이 클리어 되었습니다.");
+            Thread.Sleep(4000);
+
+            Console.Clear();
+            Environment.Exit(0);
         }
     }
     public static void Lose_Sceen()
     {
         Console.Clear();
         DrawBorder();
-        Console.SetCursorPosition(width/2,height/2);
-        Console.Write("여기는 패배씬");
+            int i1 =1;
+            int r1 = 2;
+            while (i1 !=25)
+            {
+                Console.SetCursorPosition(1,i1);
+                Console.Write("■");
+                Console.SetCursorPosition(98,i1);
+                Console.Write("■");
+                i1++;
+            
+            }
+            while(r1 != 98)
+            {
+                Console.SetCursorPosition(r1,1);
+                Console.Write("■");
+                Console.SetCursorPosition(r1,24);
+                Console.Write("■");
+                r1++;
+            }
+        Console.SetCursorPosition(width/2-12,(height/2)-2);
+        Console.Write("당신은 패배 하였습니다..");
+        Thread.Sleep(4000);
+        Console.Clear();
+        Environment.Exit(0);
     }
 }
 
