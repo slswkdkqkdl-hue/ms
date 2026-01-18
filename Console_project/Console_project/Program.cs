@@ -1357,7 +1357,7 @@ class Program
                     break;
                 case StatType.MP:
 
-                    Console.SetCursorPosition(73,10);
+                    Console.SetCursorPosition(74,10);
                     Console.Write($"+{value}");
                     SelectedCharacter.mp += value;
                     break;
